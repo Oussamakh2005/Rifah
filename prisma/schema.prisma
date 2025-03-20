@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -18,53 +12,69 @@ enum Role {
   USER
 }
 
+enum ActivityType {
+  FAJR
+  DHUHR
+  ADHKAR
+  SLEEP
+  OTHER
+}
+
 model User {
-  id        String      @id @default(cuid())
-  name      String
-  role      Role        @default(USER)
-  age       Int
-  username  String      @unique
-  password  String
-  sleepData SleepData[]
-  agenda    Agenda[]
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id             String      @id @default(cuid())
+  name           String
+  username       String      @unique
+  password       String
+  role           Role        @default(USER)
+  age            Int
+  totalPoints    Float       @default(0)
+  consecutiveDays Int        @default(0)
+  sleepData      SleepData[]
+  agenda         Agenda[]
+  activities     Activity[]
+  createdAt      Json        @default(json("{}")) // تاريخ الإنشاء بصيغة JSON
+  updatedAt      Json        @default(json("{}")) // تاريخ التحديث بصيغة JSON
 }
 
 model SleepData {
   id               String        @id @default(cuid())
-  //Part1
-  date             Json
+  date             Json          // تخزين التاريخ كـ JSON
   sleep_data       Json
-  //Part2
   sleep_experience Json?
-  //Part3
   factors          Json?
   userId           String
   user             User          @relation(fields: [userId], references: [id])
   dailyReport      DailyReport[]
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
+  createdAt        Json          @default(json("{}"))
+  updatedAt        Json          @default(json("{}"))
 }
 
 model Agenda {
   id        String   @id @default(cuid())
   userId    String
-  date      Json
+  date      Json     // التاريخ بصيغة JSON
   user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt Json     @default(json("{}"))
+  updatedAt Json     @default(json("{}"))
 }
 
 model DailyReport {
   id                   String    @id @default(cuid())
   summary              String
   rating               Int
-  total_sleep_duration String
+  total_sleep_duration Json       // مدة النوم بصيغة JSON
   sleep_problems       String[]
   recommendations      String[]
   sleepDataId          String
   sleepData            SleepData @relation(fields: [sleepDataId], references: [id])
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
+  createdAt            Json      @default(json("{}"))
+  updatedAt            Json      @default(json("{}"))
+}
+
+model Activity {
+  id          String   @id @default(cuid())
+  userId      String
+  date        Json     // التاريخ بصيغة JSON
+  activityType ActivityType
+  user        User     @relation(fields: [userId], references: [id])
 }

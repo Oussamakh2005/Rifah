@@ -4,6 +4,8 @@ import sleepRouter from "./sleepRouter.js";
 import reportRouter from "./reportRouter.js";
 import articlesRouter from "./articlesRouter.js";
 import adhkarRouter from "./adhkarRouter.js"; 
+import pointsRouter from "./pointsRouter.js";
+
 const mainRouter = Router();
 
 // user router :
@@ -35,5 +37,12 @@ mainRouter.use('/adhkar', (req, res, next) => {
   console.log('Adhkar router accessed');
   next();
 }, adhkarRouter);
+// points router :
+mainRouter.use('/points', (req, res, next) => {
+  console.log('Points router accessed');
+  next();
+}, pointsRouter);
+
+
 
 export default mainRouter;
